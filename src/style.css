@@ -1,0 +1,41 @@
+* {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  padding: 0px;
+  margin: 0px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: grey;
+  padding: 0px 20px 0px 20px;
+  border-radius: 0 0 10px 10px;
+}
+
+.folder {
+  margin: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: grey;
+  border-radius: 100px;
+  padding: 0px 20px 0px 20px;
+}
+
+.folder>button {
+  color: white;
+  background-color: transparent;
+  border: none;
+  font-style: italic;
+}
+
+.folder>p {
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  font-style: italic;
+}
