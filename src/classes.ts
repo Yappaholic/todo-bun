@@ -1,4 +1,4 @@
-type Urgency = "ASAP" | "Done" | "Canceled" | "In Process";
+type Urgency = "ASAP" | "Done" | "Canceled" | "In Progress";
 import { format } from "date-fns";
 class Folder {
   public title: string;
@@ -59,4 +59,29 @@ class ToDo {
     return this.dueDate;
   }
 }
-export { ToDo, Folder, Urgency };
+class Data {
+  public array: Object[];
+  public length: number;
+  constructor() {
+    this.array = [];
+    this.length = this.array.length;
+  }
+  addFolder(object: Folder) {
+    this.array.push(object);
+    this.length++;
+  }
+  getFolder(name: string) {
+    if (this.length === 0) {
+      return undefined;
+    }
+    for (let i = 0; i < this.length; i++) {
+      let object: any = this.array[i];
+      if (object.title === name) {
+        return object;
+      } else {
+        return undefined;
+      }
+    }
+  }
+}
+export { ToDo, Folder, Urgency, Data };
