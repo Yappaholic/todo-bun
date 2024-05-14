@@ -1,39 +1,29 @@
 import { ToDo, Folder, Urgency } from "./classes";
-const main = document.querySelector(".main");
-const newToDo = document.querySelector(".new");
+import { createFolder, createEventListeners } from "./dom";
 const create = document.querySelector(".add-folder");
-const module = document.querySelector("dialog");
 const submitFolder = document.querySelector("form>button");
-const form = document.querySelector("form");
-const defaultFolder = new Folder("Neat Folder");
-const defaultToDo = new ToDo("Neat todo", "In Process", new Date(2005, 12, 12));
-const newToDoButton = document.createElement("button");
-defaultFolder.addTodos(defaultToDo);
-function createFolder(object: Folder) {
-  const div = document.createElement("div");
-  const title = document.createElement("p");
-  const toggle = document.createElement("button");
-  const objectName = object.getTitle().replace(" ", "-");
-  newToDoButton.classList.toggle("new");
-  newToDoButton.textContent = "Add todo";
-  div.classList.toggle("folder");
-  div.classList.add(objectName);
-  title.textContent = object.getTitle();
-  toggle.textContent = "Open folder ▼";
-  div.appendChild(title);
-  div.appendChild(newToDoButton);
-  div.appendChild(toggle);
-  main.appendChild(div);
+const module = document.querySelector("dialog");
+//Creates needed listeners from dom.ts module
+createEventListeners(create, module);
+const saveData: Folder[] = [];
+//Function to get the right object in the data
+function getObject(id: string) {
+  for (let i = 0; i < saveData.length; i++) {
+    if (saveData[i].title === id) {
+      return saveData[i];
+    }
+  }
 }
-create.addEventListener("click", () => {
-  module.showModal();
-});
+//Function to get folder name and create new folder
 submitFolder.addEventListener("click", (e) => {
   e.preventDefault();
+  const form = document.querySelector("form");
   const data = new FormData(form);
   const name = data.get("folder");
+  saveData.push(new Folder(name.toString()));
   createFolder(new Folder(name.toString()));
   module.close();
 });
+const defaultFolder = new Folder("Neat Folder");
 createFolder(defaultFolder);
-console.log("hiiiiii");
+saveData.push(defaultFolder);
