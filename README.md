@@ -1,5 +1,4 @@
 # todo-js
-
 To install dependencies:
 
 ```bash

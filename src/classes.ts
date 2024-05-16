@@ -23,15 +23,6 @@ class Folder {
     this.todos.push(todo);
     return this.todos;
   }
-  removeTodos(todo: Object) {
-    let p = this.todos.indexOf(todo);
-    if (this.length === 0) {
-      return undefined;
-    } else {
-      this.todos.splice(p, 1);
-    }
-    return this.todos;
-  }
 }
 class ToDo {
   public title: string;
@@ -64,7 +55,7 @@ class Data {
   public length: number;
   constructor() {
     this.array = [];
-    this.length = this.array.length;
+    this.length = 0;
   }
   addFolder(object: Folder) {
     this.array.push(object);
@@ -74,12 +65,25 @@ class Data {
     if (this.length === 0) {
       return undefined;
     }
-    for (let i = 0; i < this.length; i++) {
+    for (let i = 0; i <= this.length; i++) {
       let object: any = this.array[i];
       if (object.title === name) {
         return object;
-      } else {
-        return undefined;
+      }
+    }
+  }
+  deleteToDo(folderName: string, toDoName: string) {
+    const object: Folder = this.getFolder(folderName);
+    for (let i = 0; i <= object.todos.length; i++) {
+      let todo: any = object.todos[i];
+      if (todo.title === toDoName) {
+        let p = object.todos.indexOf(todo);
+        if (this.length === 0) {
+          return undefined;
+        } else {
+          object.todos.splice(p, 1);
+        }
+        return object;
       }
     }
   }
