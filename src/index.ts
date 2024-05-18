@@ -18,6 +18,3 @@ submitFolder.addEventListener("click", (e) => {
   idCounter++;
   module.close();
 });
-const defaultFolder = new Folder("Neat Folder");
-createFolder(defaultFolder, idCounter, saveData);
-idCounter++;

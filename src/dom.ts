@@ -3,6 +3,8 @@ import { parse } from "date-fns";
 //Create new folder object and div
 function createFolder(object: Folder, numberId: number, saveData: Data) {
   const newToDoButton = document.createElement("button");
+  const deleteButton = document.createElement("button");
+  deleteButton.textContent = "delete folder";
   const main = document.querySelector(".main");
   const folderContainer = document.createElement("div");
   const objectId = object.getTitle().replace(" ", "-");
@@ -16,12 +18,17 @@ function createFolder(object: Folder, numberId: number, saveData: Data) {
   div.setAttribute("id", objectId);
   title.textContent = object.getTitle();
   saveData.addFolder(object);
+  deleteButton.addEventListener("click", () => {
+    saveData.deleteFolder(object.getTitle());
+    folderContainer.remove();
+  });
   newToDoButton.addEventListener("click", () => {
     createToDoForm(numberId, saveData);
   });
   folderContainer.appendChild(div);
   div.appendChild(title);
   div.appendChild(newToDoButton);
+  div.appendChild(deleteButton);
   main.appendChild(folderContainer);
 }
 function createToDo(
@@ -33,7 +40,9 @@ function createToDo(
   const folder = document.getElementById(folderId.toString()).firstElementChild
     .id;
   const folderTitle = folder.replace("-", " ");
-  console.log(folderTitle);
+  const deleteButton = document.createElement("button");
+  deleteButton.classList.toggle("delete-todo");
+  deleteButton.textContent = "delete todo";
   const isDone = document.createElement("button");
   isDone.classList.toggle("not-done");
   isDone.addEventListener("click", () => {});
@@ -43,17 +52,38 @@ function createToDo(
   title.textContent = data.get("title").toString();
   urgency.textContent = data.get("urgency").toString();
   date.textContent = data.get("date").toString();
-  div.appendChild(isDone);
-  div.appendChild(title);
-  div.appendChild(urgency);
-  div.appendChild(date);
+  //isDone button event
+  isDone.addEventListener("click", () => {
+    let toDoObj: any = saveData.getToDo(folderTitle, title.textContent);
+    if (isDone.classList.contains("not-done")) {
+      isDone.classList.toggle("not-done");
+      isDone.classList.toggle("done");
+      toDoObj.changeIsDone(true, saveData);
+    } else if (isDone.classList.contains("done")) {
+      isDone.classList.toggle("not-done");
+      isDone.classList.remove("done");
+      toDoObj.changeIsDone(false, saveData);
+    }
+  });
+  //Button to delete todo
+  deleteButton.addEventListener("click", () => {
+    const parent = deleteButton.parentElement;
+    parent.remove();
+    saveData.deleteToDo(folderTitle, title.textContent);
+  });
+  //
   const toDoUrgency: any = data.get("urgency").toString();
   let toDoDate: any = data.get("date").toString();
   toDoDate = toDoDate.replace("-", "/").replace("-", "/");
   const parseDate = parse(toDoDate, "yyyy/MM/dd", new Date());
   const toDo = new ToDo(title.textContent, toDoUrgency, parseDate);
   const folderObject: Folder = saveData.getFolder(folderTitle);
-  folderObject.addTodos(toDo);
+  folderObject.addTodos(toDo, saveData);
+  div.appendChild(isDone);
+  div.appendChild(title);
+  div.appendChild(urgency);
+  div.appendChild(date);
+  div.appendChild(deleteButton);
   return 0;
 }
 //Creates div with form to get data and then create new todo

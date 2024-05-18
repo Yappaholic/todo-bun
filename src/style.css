@@ -71,3 +71,11 @@ body {
   background-color: red;
   border: 1px solid black;
 }
+
+.done {
+  border-radius: 50%;
+  width: 3vh;
+  height: 3vh;
+  background-color: green;
+  border: 1px solid black;
+}

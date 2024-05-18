@@ -19,8 +19,10 @@ class Folder {
   getTodos() {
     return this.todos;
   }
-  addTodos(todo: Object) {
+  addTodos(todo: Object, data: Data) {
     this.todos.push(todo);
+    this.length++;
+    data.updateData();
     return this.todos;
   }
 }
@@ -36,18 +38,9 @@ class ToDo {
     this.dueDate = format(dueDate, "MM/dd/yyyy");
     this.isDone = false;
   }
-  changeTitle(newTitle: string) {
-    this.title = newTitle;
-    return this.title;
-  }
-  changeUrgency(newUrgency: Urgency) {
-    this.urgency = newUrgency;
-    return this.urgency;
-  }
-  changeDate(newDate: Date) {
-    const date: string = format(newDate, "MM/dd/yyyy");
-    this.dueDate = date;
-    return this.dueDate;
+  changeIsDone(state: boolean, data: Data) {
+    this.isDone = state;
+    data.updateData();
   }
 }
 class Data {
@@ -60,6 +53,8 @@ class Data {
   addFolder(object: Folder) {
     this.array.push(object);
     this.length++;
+    this.updateData();
+    return this.array;
   }
   getFolder(name: string) {
     if (this.length === 0) {
@@ -72,6 +67,16 @@ class Data {
       }
     }
   }
+  getToDo(folderTitle: string, toDoTitle: string) {
+    const parent: Folder = this.getFolder(folderTitle);
+    for (let i = 0; i <= parent.todos.length; i++) {
+      let todo: any = parent.todos[i];
+      if (todo.title === toDoTitle) {
+        let p = parent.todos.indexOf(todo);
+        return parent.todos[p];
+      }
+    }
+  }
   deleteToDo(folderName: string, toDoName: string) {
     const object: Folder = this.getFolder(folderName);
     for (let i = 0; i <= object.todos.length; i++) {
@@ -79,13 +84,26 @@ class Data {
       if (todo.title === toDoName) {
         let p = object.todos.indexOf(todo);
         if (this.length === 0) {
+          this.updateData();
           return undefined;
         } else {
           object.todos.splice(p, 1);
         }
+        this.updateData();
         return object;
       }
     }
+  }
+  deleteFolder(folderName: string) {
+    const folder = this.getFolder(folderName);
+    this.array.splice(folder, 1);
+    this.length--;
+    this.updateData();
+    return this.array;
+  }
+  updateData() {
+    const json = JSON.stringify(this.array);
+    localStorage["data"] = json;
   }
 }
 export { ToDo, Folder, Urgency, Data };
