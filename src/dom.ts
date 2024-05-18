@@ -1,5 +1,5 @@
 import { ToDo, Folder, Data, Urgency } from "./classes";
-import { parse } from "date-fns";
+import { parse, format } from "date-fns";
 //Create new folder object and div
 function createFolder(object: Folder, numberId: number, saveData: Data) {
   const newToDoButton = document.createElement("button");
@@ -17,7 +17,11 @@ function createFolder(object: Folder, numberId: number, saveData: Data) {
   div.classList.toggle("folder");
   div.setAttribute("id", objectId);
   title.textContent = object.getTitle();
-  saveData.addFolder(object);
+  if (saveData.getFolder(object.title) === undefined) {
+    saveData.addFolder(object);
+  } else {
+    console.log("existent");
+  }
   deleteButton.addEventListener("click", () => {
     saveData.deleteFolder(object.getTitle());
     folderContainer.remove();
@@ -33,13 +37,16 @@ function createFolder(object: Folder, numberId: number, saveData: Data) {
 }
 function createToDo(
   div: Element,
-  data: FormData,
+  titleText: string,
+  toDoUrgency: Urgency,
+  parseDate: Date,
   saveData: Data,
   folderId: number,
-) {
+): any {
   const folder = document.getElementById(folderId.toString()).firstElementChild
     .id;
   const folderTitle = folder.replace("-", " ");
+  console.log(folderTitle);
   const deleteButton = document.createElement("button");
   deleteButton.classList.toggle("delete-todo");
   deleteButton.textContent = "delete todo";
@@ -49,9 +56,9 @@ function createToDo(
   const title = document.createElement("p");
   const urgency = document.createElement("p");
   const date = document.createElement("p");
-  title.textContent = data.get("title").toString();
-  urgency.textContent = data.get("urgency").toString();
-  date.textContent = data.get("date").toString();
+  urgency.textContent = toDoUrgency;
+  date.textContent = format(parseDate, "MM/dd/yyyy");
+  title.textContent = titleText;
   //isDone button event
   isDone.addEventListener("click", () => {
     let toDoObj: any = saveData.getToDo(folderTitle, title.textContent);
@@ -72,13 +79,10 @@ function createToDo(
     saveData.deleteToDo(folderTitle, title.textContent);
   });
   //
-  const toDoUrgency: any = data.get("urgency").toString();
-  let toDoDate: any = data.get("date").toString();
-  toDoDate = toDoDate.replace("-", "/").replace("-", "/");
-  const parseDate = parse(toDoDate, "yyyy/MM/dd", new Date());
+
   const toDo = new ToDo(title.textContent, toDoUrgency, parseDate);
   const folderObject: Folder = saveData.getFolder(folderTitle);
-  folderObject.addTodos(toDo, saveData);
+  folderObject.todos.push(toDo);
   div.appendChild(isDone);
   div.appendChild(title);
   div.appendChild(urgency);
@@ -129,7 +133,13 @@ function createToDoForm(folderId: number, saveData: Data) {
         div.removeChild(div.lastChild);
       }
       const data = new FormData(form);
-      createToDo(div, data, saveData, folderId);
+      //Data stuff
+      const titleText: string = data.get("title").toString();
+      const toDoUrgency: any = data.get("urgency").toString();
+      let toDoDate: any = data.get("date").toString();
+      toDoDate = toDoDate.replace("-", "/").replace("-", "/");
+      const parseDate = parse(toDoDate, "yyyy/MM/dd", new Date());
+      createToDo(div, titleText, toDoUrgency, parseDate, saveData, folderId);
     }
   });
   urgency.appendChild(asap);
@@ -149,4 +159,4 @@ function createEventListeners(create: Element, module: any): void {
     module.showModal();
   });
 }
-export { createFolder, createEventListeners, createToDoForm };
+export { createFolder, createEventListeners, createToDo };

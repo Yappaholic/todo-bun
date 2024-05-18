@@ -22,8 +22,6 @@ class Folder {
   addTodos(todo: Object, data: Data) {
     this.todos.push(todo);
     this.length++;
-    data.updateData();
-    return this.todos;
   }
 }
 class ToDo {
@@ -57,12 +55,11 @@ class Data {
     return this.array;
   }
   getFolder(name: string) {
-    if (this.length === 0) {
-      return undefined;
-    }
     for (let i = 0; i <= this.length; i++) {
-      let object: any = this.array[i];
-      if (object.title === name) {
+      const object: any = this.array[i];
+      if (!object) {
+        return undefined;
+      } else if (object.title === name) {
         return object;
       }
     }
@@ -104,6 +101,11 @@ class Data {
   updateData() {
     const json = JSON.stringify(this.array);
     localStorage["data"] = json;
+  }
+  restoreData(restoreArray: Object[]) {
+    this.array = [...restoreArray];
+    this.length = this.array.length;
+    return this.array;
   }
 }
 export { ToDo, Folder, Urgency, Data };

@@ -1,5 +1,6 @@
 import { ToDo, Folder, Data } from "./classes";
-import { createFolder, createEventListeners, createToDoForm } from "./dom";
+import { createFolder, createEventListeners, createToDo } from "./dom";
+import { parse } from "date-fns";
 const saveData = new Data();
 const create = document.querySelector(".add-folder");
 const submitFolder = document.querySelector("form>button");
@@ -13,8 +14,41 @@ submitFolder.addEventListener("click", (e) => {
   e.preventDefault();
   const form = document.querySelector("form");
   const data = new FormData(form);
-  const name = data.get("folder");
-  createFolder(new Folder(name.toString()), idCounter, saveData);
+  const name = data.get("folder").toString();
+  console.log(saveData);
+  createFolder(new Folder(name), idCounter, saveData);
   idCounter++;
   module.close();
 });
+function restoreData() {
+  if (!localStorage["data"] || localStorage["data"] === "[]") {
+    console.log("empty");
+    return 0;
+  } else {
+    const restData = JSON.parse(localStorage["data"]);
+    saveData.restoreData(restData);
+    for (let i = 0; i < saveData.array.length; i++) {
+      const folder: any = saveData.array[i];
+      createFolder(new Folder(folder.title), idCounter, saveData);
+      for (let j = 0; j < folder.todos.length; j++) {
+        const folderId = document.getElementById(idCounter.toString());
+        const div = document.createElement("div");
+        div.classList.toggle("todo-form");
+        folderId.appendChild(div);
+        const todo: ToDo = folder.todos[j];
+        const todoDate = parse(todo.dueDate, "MM/dd/yyyy", new Date());
+        createToDo(
+          div,
+          todo.title,
+          todo.urgency,
+          todoDate,
+          saveData,
+          idCounter,
+        );
+      }
+      idCounter++;
+    }
+    return restData;
+  }
+}
+restoreData();
