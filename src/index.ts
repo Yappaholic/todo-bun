@@ -20,6 +20,7 @@ submitFolder.addEventListener("click", (e) => {
   idCounter++;
   module.close();
 });
+//localStorage.clear();
 function restoreData() {
   if (!localStorage["data"] || localStorage["data"] === "[]") {
     console.log("empty");
@@ -44,6 +45,7 @@ function restoreData() {
           todoDate,
           saveData,
           idCounter,
+          folder,
         );
       }
       idCounter++;

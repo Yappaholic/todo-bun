@@ -22,6 +22,7 @@ class Folder {
   addTodos(todo: Object, data: Data) {
     this.todos.push(todo);
     this.length++;
+    return this.todos;
   }
 }
 class ToDo {
@@ -42,7 +43,7 @@ class ToDo {
   }
 }
 class Data {
-  public array: Object[];
+  public array: Folder[];
   public length: number;
   constructor() {
     this.array = [];
@@ -54,12 +55,13 @@ class Data {
     this.updateData();
     return this.array;
   }
-  getFolder(name: string) {
+  getFolder(folderTitle: string): Folder {
     for (let i = 0; i <= this.length; i++) {
-      const object: any = this.array[i];
+      const object: Folder = this.array[i];
       if (!object) {
         return undefined;
-      } else if (object.title === name) {
+      }
+      if (object.title === folderTitle) {
         return object;
       }
     }
@@ -93,7 +95,8 @@ class Data {
   }
   deleteFolder(folderName: string) {
     const folder = this.getFolder(folderName);
-    this.array.splice(folder, 1);
+    let p = this.array.indexOf(folder);
+    this.array.splice(p, 1);
     this.length--;
     this.updateData();
     return this.array;
@@ -102,8 +105,11 @@ class Data {
     const json = JSON.stringify(this.array);
     localStorage["data"] = json;
   }
-  restoreData(restoreArray: Object[]) {
-    this.array = [...restoreArray];
+  restoreData(restoreArray: Folder[]): Folder[] {
+    for (let i = 0; i < restoreArray.length; i++) {
+      let object: Folder = restoreArray[i];
+      this.array.push(object);
+    }
     this.length = this.array.length;
     return this.array;
   }

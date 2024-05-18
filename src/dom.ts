@@ -27,7 +27,7 @@ function createFolder(object: Folder, numberId: number, saveData: Data) {
     folderContainer.remove();
   });
   newToDoButton.addEventListener("click", () => {
-    createToDoForm(numberId, saveData);
+    createToDoForm(numberId, saveData, object);
   });
   folderContainer.appendChild(div);
   div.appendChild(title);
@@ -42,6 +42,7 @@ function createToDo(
   parseDate: Date,
   saveData: Data,
   folderId: number,
+  object: Folder,
 ): any {
   const folder = document.getElementById(folderId.toString()).firstElementChild
     .id;
@@ -81,8 +82,9 @@ function createToDo(
   //
 
   const toDo = new ToDo(title.textContent, toDoUrgency, parseDate);
-  const folderObject: Folder = saveData.getFolder(folderTitle);
-  folderObject.todos.push(toDo);
+  const fold: Folder = saveData.getFolder(object.title);
+  fold.addTodos(toDo, saveData);
+  saveData.updateData();
   div.appendChild(isDone);
   div.appendChild(title);
   div.appendChild(urgency);
@@ -91,7 +93,7 @@ function createToDo(
   return 0;
 }
 //Creates div with form to get data and then create new todo
-function createToDoForm(folderId: number, saveData: Data) {
+function createToDoForm(folderId: number, saveData: Data, object: Folder) {
   const folder = document.getElementById(folderId.toString());
   const div = document.createElement("div");
   div.classList.toggle("todo-form");
@@ -139,7 +141,15 @@ function createToDoForm(folderId: number, saveData: Data) {
       let toDoDate: any = data.get("date").toString();
       toDoDate = toDoDate.replace("-", "/").replace("-", "/");
       const parseDate = parse(toDoDate, "yyyy/MM/dd", new Date());
-      createToDo(div, titleText, toDoUrgency, parseDate, saveData, folderId);
+      createToDo(
+        div,
+        titleText,
+        toDoUrgency,
+        parseDate,
+        saveData,
+        folderId,
+        object,
+      );
     }
   });
   urgency.appendChild(asap);
