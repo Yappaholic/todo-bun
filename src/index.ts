@@ -21,36 +21,37 @@ submitFolder.addEventListener("click", (e) => {
   module.close();
 });
 //localStorage.clear();
-function restoreData() {
-  if (!localStorage["data"] || localStorage["data"] === "[]") {
-    console.log("empty");
-    return 0;
-  } else {
-    const restData = JSON.parse(localStorage["data"]);
-    saveData.restoreData(restData);
-    for (let i = 0; i < saveData.array.length; i++) {
-      const folder: any = saveData.array[i];
-      createFolder(new Folder(folder.title), idCounter, saveData);
-      for (let j = 0; j < folder.todos.length; j++) {
-        const folderId = document.getElementById(idCounter.toString());
-        const div = document.createElement("div");
-        div.classList.toggle("todo-form");
-        folderId.appendChild(div);
-        const todo: ToDo = folder.todos[j];
-        const todoDate = parse(todo.dueDate, "MM/dd/yyyy", new Date());
-        createToDo(
-          div,
-          todo.title,
-          todo.urgency,
-          todoDate,
-          saveData,
-          idCounter,
-          folder,
-        );
-      }
-      idCounter++;
-    }
-    return restData;
+if (!localStorage["data"] || localStorage["data"] === "[]") {
+  console.log("empty");
+} else {
+  const restData = JSON.parse(localStorage["data"]);
+  saveData.restoreData(restData);
+  dataRestore(saveData);
+}
+function dataRestore(saveData: Data) {
+  for (let i = 0; i < saveData.array.length; i++) {
+    let folder: Folder = saveData.array[i];
+    createFolder(folder, idCounter, saveData);
+    restoreToDo(folder, idCounter);
+    idCounter++;
   }
 }
-restoreData();
+function restoreToDo(folder: Folder, idCounter: number) {
+  for (let j = 0; j < folder.todos.length; j++) {
+    const folderId = document.getElementById(idCounter.toString());
+    const div = document.createElement("div");
+    div.classList.toggle("todo-form");
+    folderId.appendChild(div);
+    const todo: any = folder.todos[j];
+    const todoDate = parse(todo.dueDate, "MM/dd/yyyy", new Date());
+    createToDo(
+      div,
+      todo.title,
+      todo.urgency,
+      todoDate,
+      saveData,
+      idCounter,
+      folder,
+    );
+  }
+}

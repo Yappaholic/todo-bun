@@ -16,10 +16,17 @@ class Folder {
   getTitle() {
     return this.title;
   }
-  getTodos() {
-    return this.todos;
+  getTodo(toDoName: string): ToDo {
+    for (let i = 0; i < this.todos.length; i++) {
+      const toDo: any = this.todos[i];
+      if (toDo.title === toDoName) {
+        return toDo;
+      } else {
+        return undefined;
+      }
+    }
   }
-  addTodos(todo: Object, data: Data) {
+  addTodos(todo: Object) {
     this.todos.push(todo);
     this.length++;
     return this.todos;
@@ -107,8 +114,11 @@ class Data {
   }
   restoreData(restoreArray: Folder[]): Folder[] {
     for (let i = 0; i < restoreArray.length; i++) {
-      let object: Folder = restoreArray[i];
-      this.array.push(object);
+      const folder = new Folder(
+        restoreArray[i].title,
+        ...restoreArray[i].todos,
+      );
+      this.addFolder(folder);
     }
     this.length = this.array.length;
     return this.array;

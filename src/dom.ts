@@ -20,7 +20,7 @@ function createFolder(object: Folder, numberId: number, saveData: Data) {
   if (saveData.getFolder(object.title) === undefined) {
     saveData.addFolder(object);
   } else {
-    console.log("existent");
+    console.log("folder exists");
   }
   deleteButton.addEventListener("click", () => {
     saveData.deleteFolder(object.getTitle());
@@ -34,6 +34,7 @@ function createFolder(object: Folder, numberId: number, saveData: Data) {
   div.appendChild(newToDoButton);
   div.appendChild(deleteButton);
   main.appendChild(folderContainer);
+  return 0;
 }
 function createToDo(
   div: Element,
@@ -81,10 +82,13 @@ function createToDo(
   });
   //
 
-  const toDo = new ToDo(title.textContent, toDoUrgency, parseDate);
-  const fold: Folder = saveData.getFolder(object.title);
-  fold.addTodos(toDo, saveData);
-  saveData.updateData();
+  if (object.getTodo(titleText) === undefined) {
+    const toDo = new ToDo(title.textContent, toDoUrgency, parseDate);
+    object.addTodos(toDo);
+    saveData.updateData();
+  } else {
+    console.log("todo exists");
+  }
   div.appendChild(isDone);
   div.appendChild(title);
   div.appendChild(urgency);
