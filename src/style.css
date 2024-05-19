@@ -86,6 +86,8 @@ body {
 
 .todo-form form {
   display: flex;
+  min-width: 30%;
+  max-width: 60%;
   justify-content: space-between;
   align-items: center;
   gap: 20px;
@@ -109,4 +111,11 @@ body {
   height: 3vh;
   background-color: #188C48;
   border: 1px solid black;
+}
+
+#module {
+  border: 1px solid #2F323A;
+  border-radius: 10px;
+  background: #7A82AB;
+  color: white;
 }
