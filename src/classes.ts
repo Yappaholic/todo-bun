@@ -16,15 +16,16 @@ class Folder {
   getTitle() {
     return this.title;
   }
-  getTodo(toDoName: string): ToDo {
+  getTodo(toDoName: string) {
     for (let i = 0; i < this.todos.length; i++) {
       const toDo: any = this.todos[i];
       if (toDo.title === toDoName) {
-        return toDo;
+        return 0;
       } else {
-        return undefined;
+        continue;
       }
     }
+    return undefined;
   }
   addTodos(todo: Object) {
     this.todos.push(todo);

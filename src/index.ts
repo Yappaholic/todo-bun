@@ -37,21 +37,32 @@ function dataRestore(saveData: Data) {
   }
 }
 function restoreToDo(folder: Folder, idCounter: number) {
-  for (let j = 0; j < folder.todos.length; j++) {
+  const length = folder.todos.length;
+  for (let j = 0; j < length; j++) {
     const folderId = document.getElementById(idCounter.toString());
     const div = document.createElement("div");
     div.classList.toggle("todo-form");
     folderId.appendChild(div);
     const todo: any = folder.todos[j];
     const todoDate = parse(todo.dueDate, "MM/dd/yyyy", new Date());
-    createToDo(
-      div,
-      todo.title,
-      todo.urgency,
-      todoDate,
-      saveData,
-      idCounter,
-      folder,
-    );
+    createCall(div, todo, todoDate, saveData, idCounter, folder);
   }
+}
+function createCall(
+  div: Element,
+  todo: any,
+  todoDate: Date,
+  saveData: Data,
+  idCounter: number,
+  folder: Folder,
+) {
+  return createToDo(
+    div,
+    todo.title,
+    todo.urgency,
+    todoDate,
+    saveData,
+    idCounter,
+    folder,
+  );
 }

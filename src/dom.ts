@@ -82,19 +82,23 @@ function createToDo(
   });
   //
 
-  if (object.getTodo(titleText) === undefined) {
-    const toDo = new ToDo(title.textContent, toDoUrgency, parseDate);
+  const toDo = new ToDo(title.textContent, toDoUrgency, parseDate);
+  if (object.getTodo(toDo.title) === undefined) {
     object.addTodos(toDo);
     saveData.updateData();
+    div.appendChild(isDone);
+    div.appendChild(title);
+    div.appendChild(urgency);
+    div.appendChild(date);
+    div.appendChild(deleteButton);
+    return 0;
   } else {
-    console.log("todo exists");
+    div.appendChild(isDone);
+    div.appendChild(title);
+    div.appendChild(urgency);
+    div.appendChild(date);
+    div.appendChild(deleteButton);
   }
-  div.appendChild(isDone);
-  div.appendChild(title);
-  div.appendChild(urgency);
-  div.appendChild(date);
-  div.appendChild(deleteButton);
-  return 0;
 }
 //Creates div with form to get data and then create new todo
 function createToDoForm(folderId: number, saveData: Data, object: Folder) {
